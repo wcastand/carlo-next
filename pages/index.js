@@ -1,27 +1,29 @@
-import React, { useState, useReducer } from 'react'
+import React, { useEffect, useReducer } from 'react'
 
 import TodoList from '../c/todolist'
 
 export default () => {
-  const [state, dispatch] = useReducer(
-    (state, action) => {
-      console.log(state, action)
-      switch (action.type) {
-        case 'INPUT':
-          return { ...state, input: action.value }
-        case 'ADD':
-          return {
-            input: '',
-            todos: [{ id: Date.now(), text: state.input }, ...state.todos],
-          }
-        case 'DEL':
-          return { ...state, todos: state.todos.filter(x => x.id !== action.id) }
-        default:
-          return state
-      }
-    },
-    { input: '', todos: [{ id: 0, text: 'Hello' }] },
-  )
+  const [state, dispatch] = useReducer((state, action) => {
+    switch (action.type) {
+      case 'INPUT':
+        return { ...state, input: action.value }
+      case 'ADD':
+        return {
+          input: '',
+          todos: [{ id: Date.now(), text: state.input }, ...state.todos],
+        }
+      case 'DEL':
+        return { ...state, todos: state.todos.filter(x => x.id !== action.id) }
+      default:
+        return state
+    }
+  }, typeof window !== 'undefined' ? JSON.parse(window.localStorage.getItem('state')) || { input: '', todos: [] } : { input: '', todos: [] })
+
+  useEffect(() => {
+    typeof window !== 'undefined'
+      ? window.localStorage.setItem('state', JSON.stringify(state))
+      : null
+  })
 
   const add = e => {
     console.log(e)
