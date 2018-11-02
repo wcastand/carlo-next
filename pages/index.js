@@ -26,7 +26,6 @@ export default () => {
   })
 
   const add = e => {
-    console.log(e)
     dispatch({ type: 'ADD' })
     e.preventDefault()
     e.stopPropagation()
